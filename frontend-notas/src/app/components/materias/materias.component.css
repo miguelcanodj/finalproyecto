@@ -1,0 +1,9 @@
+.card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

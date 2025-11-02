@@ -1,0 +1,53 @@
+<div class="container">
+  <h2>Notas</h2>
+
+  <div class="mb-3">
+    <label for="materiaSelect">Selecciona una materia:</label>
+    <select id="materiaSelect" class="form-select" [(ngModel)]="selectedMateria" (change)="cargarNotas()">
+      <option value="">-- Selecciona --</option>
+      <option value="todas">Todas</option>
+      <option *ngFor="let materia of materias" [value]="materia._id">{{ materia.nombre }}</option>
+    </select>
+
+    <p *ngIf="selectedMateria === 'todas' && notas.length > 0">
+      Promedio general: {{ calcularPromedio() }}
+    </p>
+  </div>
+
+  <div class="mb-3">
+    <input type="text" class="form-control mb-2" placeholder="Descripción" [(ngModel)]="descripcion">
+    <input type="number" class="form-control mb-2" placeholder="Calificación" [(ngModel)]="calificacion" min="0" max="5">
+    <button class="btn btn-success" (click)="agregarNota()">Agregar Nota</button>
+  </div>
+
+  <h4>Notas Registradas</h4>
+
+  <!-- Agrupar por materia si seleccionaste "todas" -->
+  <div *ngIf="selectedMateria === 'todas'">
+    <div *ngFor="let materia of materias">
+      <h5>{{ materia.nombre }}</h5>
+      <ul class="list-group mb-2">
+        <li *ngFor="let nota of notasPorMateria(materia.nombre)" class="list-group-item d-flex justify-content-between align-items-center">
+          {{ nota.descripcion }} - {{ nota.calificacion }}
+          <button class="btn btn-danger btn-sm" (click)="eliminarNota(nota._id)">Eliminar</button>
+        </li>
+        <li *ngIf="notasPorMateria(materia.nombre).length === 0" class="list-group-item text-muted">
+          No hay notas en esta materia.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Listado de notas de una materia específica -->
+  <ul *ngIf="selectedMateria !== 'todas' && notas.length > 0" class="list-group mb-2">
+    <li *ngFor="let nota of notas" class="list-group-item d-flex justify-content-between align-items-center">
+      {{ nota.descripcion }} - {{ nota.calificacion }}
+      <button class="btn btn-danger btn-sm" (click)="eliminarNota(nota._id)">Eliminar</button>
+    </li>
+  </ul>
+
+  <!-- Mensaje cuando no hay notas en la materia seleccionada -->
+  <p *ngIf="selectedMateria !== 'todas' && notas.length === 0">No hay notas para esta materia.</p>
+
+  <h5 *ngIf="notas.length > 0">Promedio: {{ calcularPromedio() }}</h5>
+</div>

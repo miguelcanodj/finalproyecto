@@ -7,6 +7,7 @@ const Nota = require("../models/nota");
 router.post("/", async (req, res) => {
   try {
     const { materiaId, descripcion, calificacion } = req.body;
+    console.log("📩 Datos recibidos:", req.body); // 👈 agrega esta línea
 
     // Validar que vengan todos los campos
     if (!materiaId || !descripcion || calificacion === undefined) {
@@ -17,6 +18,7 @@ router.post("/", async (req, res) => {
     const nuevaNota = await nota.save();
     res.status(201).json(nuevaNota);
   } catch (error) {
+    console.error("❌ Error al crear nota:", error);
     res.status(400).json({ message: error.message });
   }
 });

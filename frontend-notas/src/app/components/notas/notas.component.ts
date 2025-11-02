@@ -41,11 +41,32 @@ export class NotasComponent implements OnInit {
 
 
   async agregarNota() {
-    if (!this.selectedMateria || !this.descripcion || this.calificacion === null) return;
-    await this.api.addNota(this.selectedMateria, this.descripcion, this.calificacion);
-    this.descripcion = '';
-    this.calificacion = null;
-    this.cargarNotas();
+    if (
+      !this.selectedMateria ||
+      this.selectedMateria === 'todas' || // 🚫 evita usar "todas" como ID
+      !this.descripcion ||
+      this.calificacion === null
+    ) {
+      alert('Selecciona una materia específica y completa todos los campos');
+      return;
+    }
+
+    try {
+      await this.api.addNota(
+        this.selectedMateria,  // debe ser el ID real
+        this.descripcion,
+        this.calificacion
+      );
+
+      this.descripcion = '';
+      this.calificacion = null;
+      await this.cargarNotas();
+
+      alert('✅ Nota agregada correctamente');
+    } catch (error) {
+      console.error('Error al agregar nota:', error);
+      alert('❌ Hubo un error al agregar la nota');
+    }
   }
 
   async eliminarNota(id: string) {
@@ -55,7 +76,7 @@ export class NotasComponent implements OnInit {
 
     // ✅ Esta función DEBE estar dentro de la clase
   notasPorMateria(nombreMateria: string) {
-    return this.notas.filter(n => n.materiaId.nombre === nombreMateria);
+    return this.notas.filter(n => n.materiaId && n.materiaId.nombre === nombreMateria);
   }
 
   calcularPromedio(): number {
